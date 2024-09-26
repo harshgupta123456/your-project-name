@@ -1,6 +1,7 @@
 import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 
@@ -8,16 +9,29 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      let response;
       if (isCreatingAccount) {
-        message.success('Account created successfully! You can now log in.');
+        // Register request
+        response = await axios.post('http://localhost:5000/api/register', values);
+        message.success(response.data.message || 'Account created successfully! You can now log in.');
       } else {
-        message.success('Login successful!');
+        // Login request
+        response = await axios.post('http://localhost:5000/api/login', {
+          username: values.username,
+          password: values.password,
+        });
+        message.success(response.data.message || 'Login successful!');
       }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      message.error(errorMessage);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const onFinishFailed = () => {
@@ -98,8 +112,8 @@ const LoginForm = () => {
                       borderRadius: '8px',
                       transition: 'border-color 0.3s ease',
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#40a9ff'}
-                    onBlur={(e) => e.target.style.borderColor = '#d9d9d9'}
+                    onFocus={(e) => (e.target.style.borderColor = '#40a9ff')}
+                    onBlur={(e) => (e.target.style.borderColor = '#d9d9d9')}
                   />
                 </Form.Item>
               </motion.div>
@@ -121,8 +135,8 @@ const LoginForm = () => {
                         borderRadius: '8px',
                         transition: 'border-color 0.3s ease',
                       }}
-                      onFocus={(e) => e.target.style.borderColor = '#40a9ff'}
-                      onBlur={(e) => e.target.style.borderColor = '#d9d9d9'}
+                      onFocus={(e) => (e.target.style.borderColor = '#40a9ff')}
+                      onBlur={(e) => (e.target.style.borderColor = '#d9d9d9')}
                     />
                   </Form.Item>
                 </motion.div>
@@ -144,8 +158,8 @@ const LoginForm = () => {
                       borderRadius: '8px',
                       transition: 'border-color 0.3s ease',
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#40a9ff'}
-                    onBlur={(e) => e.target.style.borderColor = '#d9d9d9'}
+                    onFocus={(e) => (e.target.style.borderColor = '#40a9ff')}
+                    onBlur={(e) => (e.target.style.borderColor = '#d9d9d9')}
                   />
                 </Form.Item>
               </motion.div>
@@ -178,8 +192,8 @@ const LoginForm = () => {
                         borderRadius: '8px',
                         transition: 'border-color 0.3s ease',
                       }}
-                      onFocus={(e) => e.target.style.borderColor = '#40a9ff'}
-                      onBlur={(e) => e.target.style.borderColor = '#d9d9d9'}
+                      onFocus={(e) => (e.target.style.borderColor = '#40a9ff')}
+                      onBlur={(e) => (e.target.style.borderColor = '#d9d9d9')}
                     />
                   </Form.Item>
                 </motion.div>
@@ -247,13 +261,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-// CSS for Background Animation
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes backgroundAnimation {
-    0% { background-color: #e0f7fa; }
-    100% { background-color: #f1f8e9; }
-  }
-`;
-document.head.appendChild(style);

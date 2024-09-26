@@ -6,32 +6,30 @@ import './Documents.css'; // Import your CSS file
 
 const { Title, Paragraph } = Typography;
 
-// Sample data for documents with updated PDF names
 const dataSource = [
   {
     key: '1',
     title: 'Project Report',
     category: 'Reports',
     description: 'Detailed report on project progress and outcomes.',
-    link: '/pdf/project report.pdf', // Updated link
+    link: 'https://gbihr.org/images/docs/test.pdf', // External link for both viewing and download
   },
   {
     key: '2',
     title: 'Research Paper',
     category: 'Research',
     description: 'In-depth analysis on a specific research topic.',
-    link: '/downloads/Research-Paper.pdf', // Updated link
+    link: 'https://gbihr.org/images/docs/test.pdf', // External link for both viewing and download
   },
   {
     key: '3',
     title: 'T Document',
     category: 'Miscellaneous',
     description: 'General documentation related to the project.',
-    link: '/downloads/T.pdf', // Updated link
+    link: 'https://gbihr.org/images/docs/test.pdf', // External link for both viewing and download
   },
 ];
 
-// Column configuration for the Ant Design table
 const columns = (showModal) => [
   {
     title: 'Document Title',
@@ -55,15 +53,18 @@ const columns = (showModal) => [
     key: 'link',
     render: (text, record) => (
       <Space size="middle">
+        {/* View button to open the PDF in modal */}
         <Button
           type="primary"
           icon={<EyeOutlined />}
           size="middle"
-          onClick={() => showModal(record.link)} // Use showModal here
+          onClick={() => showModal(record.link)} // Show PDF in modal for viewing
         >
           View
         </Button>
-        <a href={record.link}>
+
+        {/* Download button to directly download the PDF */}
+        <a href={record.link} download>
           <Button type="primary" icon={<DownloadOutlined />} size="middle">
             Download
           </Button>
@@ -77,11 +78,13 @@ const Documents = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pdfUrl, setPdfUrl] = useState('');
 
+  // Function to show modal and view the PDF
   const showModal = (url) => {
-    setPdfUrl(url);
+    setPdfUrl(url); // Directly set the PDF URL for viewing
     setIsModalVisible(true);
   };
 
+  // Function to close the modal
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -99,7 +102,7 @@ const Documents = () => {
       </Paragraph>
       <Table
         dataSource={dataSource}
-        columns={columns(showModal)} // Pass showModal to columns
+        columns={columns(showModal)} // Pass showModal for view action
         pagination={false}
         bordered
         rowClassName="animated-row"
@@ -119,13 +122,9 @@ const Documents = () => {
           },
         }}
         style={{ backgroundColor: '#fff' }}
-        onRow={(record) => ({
-          onMouseEnter: () => {
-            // Optional hover effect
-          },
-        })}
       />
 
+      {/* Modal to view PDF */}
       <Modal
         title="View Document"
         visible={isModalVisible}
@@ -133,6 +132,7 @@ const Documents = () => {
         footer={null}
         width={800}
       >
+        {/* Display the PDF in an iframe */}
         <iframe
           src={pdfUrl}
           width="100%"
